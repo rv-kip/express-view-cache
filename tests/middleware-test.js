@@ -7,7 +7,8 @@ vows.describe('Middleware tests').
     addBatch({
         "General tests":{
             "topic":{
-                "middleware":middleware,
+                "adapter": new adapterMemory(),
+                "middleware": middleware,
                 "request1st":{'originalUrl':'/index.html', 'method':'GET'},
                 "request2nd":{'originalUrl':'/index1.html', 'method':'GET'},
                 "response1st":{
@@ -40,7 +41,7 @@ vows.describe('Middleware tests').
                 assert.isFunction(topic.middleware);
             },
             "It should cache GET requests":function (topic) {
-                adapterMemory.set('/index.html', 'index_html', function (err, result) {
+                topic.adapter.set('/index.html', 'index_html', function (err, result) {
                     if (err) throw err;
                     assert.ok(result,'Saving result to cache returned not true!');
                     var f = topic.middleware;
@@ -48,7 +49,7 @@ vows.describe('Middleware tests').
                 }, 1000);
             },
             "It should invalidate old requests":function (topic) {
-                adapterMemory.set('/index1.html', 'index_html', function (err, result) {
+                topic.adapter.set('/index1.html', 'index_html', function (err, result) {
                     if (err) throw err;
                     setTimeout(function () {
                         assert.ok(result,'Saving result to cache returned not true!');
