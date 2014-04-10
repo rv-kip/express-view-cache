@@ -16,7 +16,7 @@ vows.describe('Middleware tests').
                         assert.equal(header, 'Cache-Control', "public, max-age=60, must-revalidate");
                     },
                     'send':function (content) {
-                        assert.equal(content, 'index_html')
+                        assert.equal(content, 'index_html');
 
                     }
                 },
@@ -30,10 +30,10 @@ vows.describe('Middleware tests').
                     }
                 },
                 "next1st":function () {
-                    throw new Error('Next is called when cached! It is not right!')
+                    throw new Error('Next is called when cached! It is not right!');
                 },
                 "next2nd":function () {
-                    console.log('Next2nd called!')
+                    console.log('Next2nd called!');
                 }
             },
             "It should be a function":function (topic) {

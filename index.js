@@ -1,17 +1,17 @@
 var adapterMemory = require('./lib/adapterMemory.js'),
-    adapterMemJS = require('./lib/adapterMemJS.js');
+    adapterMemJS = require('./lib/adapterMemJS.js'),
+    adapterRedis = require('./lib/adapterRedis'),
+    dummy_logger = require('./lib/dummy_logger');
 
 // Caching middleware for Express framework
 // details are here https://github.com/vodolaz095/express-view-cache
 module.exports=function(invalidateTimeInMilliseconds, parameters, logger){
     // set up a faux logger if one isn't provided
     if (!logger) {
-        logger = {
-            info    : console.log,
-            debug   : console.log
-        };
+        logger = dummy_logger;
     }
 
+    var cache;
     if (!invalidateTimeInMilliseconds || isNaN(invalidateTimeInMilliseconds)) {
         invalidateTimeInMilliseconds = 60 * 1000; //1 minute
     }
@@ -19,13 +19,13 @@ module.exports=function(invalidateTimeInMilliseconds, parameters, logger){
     if (parameters && parameters.driver) {
         switch (parameters.driver) {
             case 'memjs':
-                cache = adapterMemJS;
+                cache = new adapterMemJS(logger);
                 break;
             case 'redis':
-                cache = require('./lib/adapterRedis.js');
+                cache = new adapterRedis(logger);
                 break;
             default :
-                cache = adapterMemory;
+                cache = new adapterMemory(logger);
         }
     } else {
         cache = adapterMemory;
